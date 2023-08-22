@@ -13,6 +13,10 @@ $ cp .env.example .env
 $ npm start
 ```
 
+## Migration
+
+Go to `<host>/migrate` (eg. if you're running the APP locally: [`localhost:3000/migrate`](http://localhost:3000/migrate)) and fill in the form with the relevant AirTable details, then click "Migrate the database".
+
 ## For some basic source code explanation see the [wiki page](https://github.com/nditech/CyberSim-UI/wiki)
 
 ## AWS environment:
