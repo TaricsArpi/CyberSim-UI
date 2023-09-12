@@ -6,7 +6,7 @@ phases:
     commands:
       - echo "Node version 18 installed"
       - echo "Installing source NPM dependencies..."
-      - npm install
+      - npm ci
 
   build:
     commands:

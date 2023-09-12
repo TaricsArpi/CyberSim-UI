@@ -13,7 +13,7 @@ import axios from 'axios';
 
 const baseState = {
   password: '',
-  apiKey: '',
+  accessToken: '',
   tableId: '',
 };
 
@@ -108,20 +108,20 @@ export default function Migrate() {
             <Form.Group>
               <Form.Label>
                 <h5 className="font-weight-normal mb-0">
-                  Airtable API key:
+                  Airtable access token:
                 </h5>
               </Form.Label>
               <Form.Control
                 type="password"
-                name="apiKey"
-                value={state.apiKey}
+                name="accessToken"
+                value={state.accessToken}
                 onChange={onChange}
                 autoComplete="off"
                 style={{ fontSize: '1.125rem' }}
-                isInvalid={errors?.apiKey}
+                isInvalid={errors?.accessToken}
               />
               <Form.Control.Feedback type="invalid" tooltip>
-                {errors?.apiKey}
+                {errors?.accessToken}
               </Form.Control.Feedback>
             </Form.Group>
             <Form.Group>
@@ -151,7 +151,7 @@ export default function Migrate() {
                   type="submit"
                   disabled={
                     !state.password ||
-                    !state.apiKey ||
+                    !state.accessToken ||
                     !state.tableId ||
                     isLoading
                   }
@@ -185,23 +185,29 @@ export default function Migrate() {
                     'An unexpected error occured! Please contact the developers to fix it.'}
                 </h3>
                 <div>
-                  {validationError.errors.map((error) => (
+                  {validationError.errors.map((error, index) => (
                     <Alert
+                      key={index}
                       variant="danger"
                       dismissible
                       onClose={() =>
-                        setValidationError({
-                          ...validationError,
-                          errors: validationError.errors.filter(
-                            (err) => err !== error,
-                          ),
-                        })
+                        setValidationError(
+                          (previousValidationErrors) => ({
+                            ...previousValidationErrors,
+                            errors:
+                              previousValidationErrors.errors.filter(
+                                (err) => err !== error,
+                              ),
+                          }),
+                        )
                       }
                     >
                       <Alert.Heading>{error.message}</Alert.Heading>
-                      <div className="pre">
-                        {JSON.stringify(error.value, null, 2)}
-                      </div>
+                      {error.value && (
+                        <div className="pre">
+                          {JSON.stringify(error.value, null, 2)}
+                        </div>
+                      )}
                     </Alert>
                   ))}
                 </div>
@@ -237,24 +243,71 @@ export default function Migrate() {
                 </a>
                 and log in.
               </div>
-              <div>
-                3. Find your airtable account settings and copy your
-                airtable API key into the "Airtable API key" input
-                field.
+              <div className="mb-1">
+                3. Navigate to the "Developer Hub" from the menu.
+                Create a new "Personal access token".
               </div>
               <Row className="mb-4 mt-1">
-                <Col sm={12} md={4}>
+                <Col sm={12}>
                   <Image
                     fluid
-                    src="/api_key.png"
-                    alt="Find airtable API key 1."
+                    src="/settings_1.png"
+                    alt="Menu - Developer Hub."
                   />
                 </Col>
-                <Col sm={12} md={8}>
+              </Row>
+              <div className="mb-1">
+                Create a new "Personal access token".
+              </div>
+              <Row className="mb-4 mt-1">
+                <Col sm={12}>
                   <Image
                     fluid
-                    src="/api_key2.png"
-                    alt="Find airtable API key 2."
+                    src="/token_1.png"
+                    alt="Create personal access token 1."
+                  />
+                </Col>
+              </Row>
+              <div className="mb-1">
+                Fill the form as follows:
+                <ul>
+                  <li>The name is arbitrary</li>
+                  <li>
+                    The required scope settings:
+                    <i> data.records:read, schema.bases:read</i>
+                  </li>
+                  <li>
+                    For access select the base of the game you want to
+                    migrate.
+                  </li>
+                </ul>
+              </div>
+              <Row className="mb-4 mt-1">
+                <Col sm={12}>
+                  <Image
+                    fluid
+                    src="/token_2.png"
+                    alt="Create personal access token 2."
+                  />
+                </Col>
+              </Row>
+              <div className="mb-1">
+                After clicking the "Create Token" button a modal will
+                appear. Here you can see your personal access token.
+                <b>
+                  You won't be able to see this again after closing
+                  the modal window, so please save it where you can
+                  find it later.
+                </b>
+                You should copy this token into the "Airtable access
+                token" input field.
+              </div>
+              <Row className="mb-4 mt-1">
+                <Col sm={12}>
+                  <Image
+                    fluid
+                    src="/token_3.png"
+                    alt="Create personal access token 3."
                   />
                 </Col>
               </Row>
