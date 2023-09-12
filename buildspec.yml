@@ -4,8 +4,7 @@ phases:
     runtime-versions:
       nodejs: 18
     commands:
-      - echo "Node version 18 installed"
-      - node -v
+      - echo "Node version $(node -v) installed"
       - echo "Installing source NPM dependencies..."
       - npm ci
 
