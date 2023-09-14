@@ -75,6 +75,18 @@ To create the CodeBuild project please follow these steps:
 6. Leave the _Build specification_ on "Use a buildspec file".
 7. No batch configuration is needed.
 
+Frequent errors:
+
+- **`npm ci` can only install packages when your package.json and package-lock.json or npm-shrinkwrap.json are in sync. Please update your lock file with `npm install` before continuing.`**
+
+Troubleshooting:
+
+1. Please check the error log for the specific Node version the build environment uses. (e.g. v18.6.0).
+2. On your local environment please install the exact same version of node with `nvm install vX.X.X`. After the installation check the currently used version with the `node -v` command. If it doesn't match the just installed version run the following command: `nvm use vX.X.X`.
+3. Delete the `package-lock.json` file.
+4. Run `npm install` :warning: **twice** :warning:!
+5. Push the updated `package-lock.json` and rerun the CodeBuild.
+
 ## S3 (e.g., ndi@cybersim.demcloud.org)
 
 A different S3 bucket is created for each environment. Public access is enabled on these buckets, which are configured for static website hosting.
