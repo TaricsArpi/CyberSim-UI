@@ -149,6 +149,30 @@ select.form-control:focus {
   transform: translate(0, -50%);
 }
 
+.custom-switch.custom-switch-center {
+  padding: 0;
+
+  .custom-control-label {
+    height: 1.5em;
+
+    &::before {
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    &::after {
+      left: 50%;
+      transform: translate(-100%, -50%);
+    }
+  }
+
+  .custom-control-input:checked ~ .custom-control-label {
+    &::after {
+      transform: translate(0, -50%);
+    }
+  }
+}
+
 .custom-radio .custom-control-label::after,
 .custom-radio .custom-control-label::before {
   top: 50%;
@@ -316,4 +340,10 @@ select.form-control:focus {
   position: absolute;
   top: 15px;
   right: 20px;
+}
+
+.column-title-ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }

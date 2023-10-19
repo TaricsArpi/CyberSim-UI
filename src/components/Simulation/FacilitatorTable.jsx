@@ -3,7 +3,6 @@ import { filter as _filter } from 'lodash';
 import { view } from '@risingstack/react-easy-state';
 
 import SystemRelatedActions from './SystemRelatedActions';
-import BudgetItems from './BudgetItems';
 import ResolvedInjections from './Injections/ResolvedInjections';
 import InjectsAndResponses from './Injections/InjectsAndResponses';
 import { SimulationTabs } from '../../constants';
@@ -86,7 +85,6 @@ const FacilitatorTable = view(({ activeTab }) => {
         className="my-5"
         injectionsToResponse={injectionsToResponse}
       />
-      <BudgetItems className="my-5" location={location} />
       <SystemRelatedActions
         className="my-5 pb-5"
         location={location}

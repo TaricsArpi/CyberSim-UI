@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
 
 import Header from './Header';
@@ -12,13 +12,6 @@ const Simulation = () => {
   const [activeTab, setActiveTab] = useState(
     SimulationTabs.ACTION_TABLE,
   );
-
-  useEffect(() => {
-    document.querySelector('#root').scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  });
 
   const body = useMemo(() => {
     switch (activeTab) {

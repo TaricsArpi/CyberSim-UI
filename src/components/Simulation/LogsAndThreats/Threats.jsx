@@ -19,13 +19,7 @@ const Threats = view(({ className }) => {
             injections,
             (
               acc,
-              {
-                trigger_time: triggerTime,
-                title,
-                id,
-                location,
-                prevented,
-              },
+              { trigger_time: triggerTime, title, id, location },
             ) => {
               if (gameInjections[id].prevented) {
                 acc.notThreats.push({
@@ -73,7 +67,7 @@ const Threats = view(({ className }) => {
             MITIGATED THREATS:
           </Card.Header>
           <Card.Body className="pb-3 threats-body">
-            {!!notThreats.length
+            {notThreats.length > 0
               ? notThreats.map(({ desc, location }, i) => (
                   <Row
                     key={i}
@@ -117,7 +111,7 @@ const Threats = view(({ className }) => {
             NOT MITIGATED THREATS:
           </Card.Header>
           <Card.Body className="pb-3 threats-body">
-            {!!threats.length
+            {threats.length > 0
               ? threats.map(({ desc, location }, i) => (
                   <Row
                     key={i}

@@ -1,4 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, {
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+} from 'react';
 import axios from 'axios';
 import { keyBy as _keyBy } from 'lodash';
 
@@ -13,6 +18,32 @@ export const useStaticData = () => {
 };
 
 export const StaticDataProvider = ({ children }) => {
+  // LOCATIONS
+  const [locationsLoading, setLocationsLoading] = useState(false);
+  const [locations, setLocations] = useState([]);
+  useEffect(() => {
+    setLocationsLoading(true);
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/locations`)
+      .then(({ data }) => {
+        setLocations(_keyBy(data, 'id'));
+      })
+      .catch((e) => console.error(e))
+      .finally(() => setLocationsLoading(false));
+  }, [setLocations]);
+
+  // LOCATION NAME GETTER
+  const getLocationNameByType = useCallback(
+    (type, defaultName = 'HQ') => {
+      return !locationsLoading
+        ? Object.values(locations).find(
+            (location) => location.type === type,
+          )?.name ?? defaultName
+        : defaultName;
+    },
+    [locations, locationsLoading],
+  );
+
   // SYSTEMS
   const [systemsLoading, setSystemsLoading] = useState(false);
   const [systems, setSystems] = useState([]);
@@ -83,7 +114,7 @@ export const StaticDataProvider = ({ children }) => {
       .finally(() => setActionsLoading(false));
   }, [setActions]);
 
-  // ACTIONS
+  // CURVBALLS
   const [curveballsLoading, setCurveballsLoading] = useState(false);
   const [curveballs, setCurveballs] = useState([]);
   useEffect(() => {
@@ -100,6 +131,9 @@ export const StaticDataProvider = ({ children }) => {
   return (
     <StaticDataContext.Provider
       value={{
+        locationsLoading,
+        locations,
+        getLocationNameByType,
         systemsLoading,
         systems,
         mitigationsLoading,
@@ -113,6 +147,7 @@ export const StaticDataProvider = ({ children }) => {
         curveballsLoading,
         curveballs,
         loading:
+          locationsLoading ||
           systemsLoading ||
           mitigationsLoading ||
           injectionsLoading ||

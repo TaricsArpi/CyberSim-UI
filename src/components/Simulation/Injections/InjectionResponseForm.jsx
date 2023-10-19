@@ -125,15 +125,9 @@ const InjectionResponseForm = view(
     const availableResponses = useMemo(
       () =>
         injection.responses?.filter(
-          ({ required_mitigation, required_mitigation_type }) =>
-            !required_mitigation_type ||
-            !required_mitigation ||
-            (required_mitigation_type === 'party'
-              ? gameMitigations[`${required_mitigation}_hq`] &&
-                gameMitigations[`${required_mitigation}_local`]
-              : gameMitigations[
-                  `${required_mitigation}_${required_mitigation_type}`
-                ]),
+          ({ required_mitigation: requiredMitigationId }) =>
+            !requiredMitigationId ||
+            gameMitigations[requiredMitigationId],
         ),
       [injection, gameMitigations],
     );

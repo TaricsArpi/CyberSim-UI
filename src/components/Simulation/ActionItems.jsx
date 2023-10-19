@@ -10,7 +10,7 @@ import { useStaticData } from '../StaticDataProvider';
 
 const ActionItems = view(({ className, location }) => {
   const { systems: gameSystems } = gameStore;
-  const { actions, systems } = useStaticData();
+  const { actions, systems, getLocationNameByType } = useStaticData();
 
   const actionListByRoles = useMemo(() => {
     const actionsWithSystems = _map(actions, (action) => {
@@ -51,8 +51,14 @@ const ActionItems = view(({ className, location }) => {
         <Col xs={12}>
           <h2 className="font-weight-bold mb-0">
             {location === 'local'
-              ? 'LOCAL ACTIONS:'
-              : 'HQ ACTIONS AND SECURITY ACTIONS:'}
+              ? `${getLocationNameByType(
+                  'local',
+                  'Local',
+                )} ACTIONS:`.toUpperCase()
+              : `${getLocationNameByType(
+                  'hq',
+                  'HQ',
+                )} ACTIONS AND SECURITY ACTIONS:`.toUpperCase()}
           </h2>
         </Col>
       </Row>

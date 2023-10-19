@@ -57,16 +57,16 @@ export const gameStore = store({
         );
       } else if (key === 'mitigations') {
         gameStore.mitigations = game.mitigations.reduce(
-          (acc, { mitigation_id, location, state }) => ({
+          (acc, { mitigation_id, state }) => ({
             ...acc,
-            [`${mitigation_id}_${location}`]: state,
+            [mitigation_id]: state,
           }),
           {},
         );
         gameStore.preparationMitigations = game.mitigations.reduce(
-          (acc, { mitigation_id, location, preparation }) => ({
+          (acc, { mitigation_id, preparation }) => ({
             ...acc,
-            [`${mitigation_id}_${location}`]: preparation,
+            [mitigation_id]: preparation,
           }),
           {},
         );
@@ -99,21 +99,33 @@ export const gameStore = store({
 
   // ACTIONS
   actions: {
-    enterGame: ({ eventType, gameId, rememberGameId }) => {
+    enterGame: ({
+      eventType,
+      gameId,
+      rememberGameId,
+      initialBudget = 6000,
+      initialPollPercentage = 55,
+    }) => {
       gameStore.loading = true;
-      socket.emit(eventType, gameId, ({ error, game }) => {
-        if (!error) {
-          gameStore.setGame(game);
-          if (rememberGameId) {
-            localStorage.setItem('gameId', gameId);
+      socket.emit(
+        eventType,
+        gameId,
+        initialBudget,
+        initialPollPercentage,
+        ({ error, game }) => {
+          if (!error) {
+            gameStore.setGame(game);
+            if (rememberGameId) {
+              localStorage.setItem('gameId', gameId);
+            } else {
+              localStorage.removeItem('gameId');
+            }
           } else {
-            localStorage.removeItem('gameId');
+            gameStore.popError(error);
           }
-        } else {
-          gameStore.popError(error);
-        }
-        gameStore.loading = false;
-      });
+          gameStore.loading = false;
+        },
+      );
     },
     resumeSimulation: () =>
       gameStore.emitEvent(SocketEvents.STARTSIMULATION),
@@ -177,6 +189,8 @@ socket.on(SocketEvents.RECONNECT, () => {
     socket.emit(
       SocketEvents.JOINGAME,
       gameStore.id,
+      null, // initialBudget (only for CREATE GAME)
+      null, // initialPollPercentage (only for CREATE GAME)
       ({ error, game: g }) => {
         if (!error) {
           gameStore.setGame(g);
@@ -196,6 +210,8 @@ if (gameIdFromQuery) {
   socket.emit(
     SocketEvents.JOINGAME,
     gameIdFromQuery,
+    null, // initialBudget (only for CREATE GAME)
+    null, // initialPollPercentage (only for CREATE GAME)
     ({ error, game }) => {
       if (!error) {
         gameStore.setGame(game);

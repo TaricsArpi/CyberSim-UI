@@ -19,6 +19,11 @@ const EnterGame = view(() => {
     !!gameIdFromLocalStorage,
   );
 
+  const [adjustGameConfig, setAdjustGameConfig] = useState(false);
+  const [initialBudget, setInitialBudget] = useState(6000);
+  const [initialPollPercentage, setInitialPollPercentage] =
+    useState(55);
+
   return (
     <Container fluid="md" className="mt-5 pt-5">
       <Button
@@ -44,13 +49,15 @@ const EnterGame = view(() => {
                 eventType: SocketEvents.CREATEGAME,
                 gameId,
                 rememberGameId,
+                initialBudget,
+                initialPollPercentage,
               });
             }}
           >
             <Form.Group controlId="GameId">
               <Form.Label>
                 <h5 className="font-weight-normal mb-0">
-                  Your game’s name:
+                  Your game's name:
                 </h5>
               </Form.Label>
               <Form.Control
@@ -71,6 +78,76 @@ const EnterGame = view(() => {
                 style={{ fontSize: '1.125rem' }}
               />
             </Form.Group>
+            <Form.Group controlId="AdjustGameConfig">
+              <Form.Check
+                type="switch"
+                label={<span>Adjust initial game options</span>}
+                defaultChecked={adjustGameConfig}
+                onChange={(e) =>
+                  setAdjustGameConfig(e.target.checked)
+                }
+                style={{ fontSize: '1.125rem' }}
+              />
+            </Form.Group>
+            {adjustGameConfig && (
+              <div className="p-3 border border-primary">
+                <Form.Group controlId="Budget">
+                  <Form.Label column="lg">
+                    <h5 className="font-weight-normal mb-0">
+                      Budget:
+                    </h5>
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    placeholder="Budget"
+                    size="sm"
+                    onChange={(event) => {
+                      const newValue = !event.target.value.length
+                        ? ''
+                        : parseInt(event.target.value, 10);
+
+                      setInitialBudget(newValue);
+                    }}
+                    value={initialBudget}
+                    step={100}
+                    min={0}
+                    isInvalid={!initialBudget}
+                    autoComplete="off"
+                    style={{ fontSize: '1.125rem' }}
+                  />
+                </Form.Group>
+
+                <Form.Group
+                  controlId="PollPercentage"
+                  className="mb-0"
+                >
+                  <Form.Label column="lg">
+                    <h5 className="font-weight-normal mb-0">
+                      Poll percentage:
+                    </h5>
+                  </Form.Label>
+                  <Form.Control
+                    type="number"
+                    size="sm"
+                    placeholder="Poll Percentage"
+                    onChange={(event) => {
+                      const newValue = !event.target.value.length
+                        ? ''
+                        : parseInt(event.target.value, 10);
+
+                      setInitialPollPercentage(newValue);
+                    }}
+                    value={initialPollPercentage}
+                    autoComplete="off"
+                    step={1}
+                    max={100}
+                    min={0}
+                    isInvalid={!initialPollPercentage}
+                    style={{ fontSize: '1.125rem' }}
+                  />
+                </Form.Group>
+              </div>
+            )}
             <Row className="my-4">
               <Col>
                 <Button
@@ -83,6 +160,8 @@ const EnterGame = view(() => {
                       eventType: SocketEvents.CREATEGAME,
                       gameId,
                       rememberGameId,
+                      initialBudget,
+                      initialPollPercentage,
                     })
                   }
                 >

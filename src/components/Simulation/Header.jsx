@@ -5,9 +5,12 @@ import { view } from '@risingstack/react-easy-state';
 
 import { SimulationTabs } from '../../constants';
 import { gameStore } from '../GameStore';
+import { useStaticData } from '../StaticDataProvider';
 
 const Header = view(({ activeTab, setActiveTab }) => {
   const { id } = gameStore;
+  const { getLocationNameByType } = useStaticData();
+
   return (
     <div className="position-sticky bg-white text-center simulation-menu shadow">
       <Row className="m-0">
@@ -38,7 +41,9 @@ const Header = view(({ activeTab, setActiveTab }) => {
           )}
           onClick={() => setActiveTab(SimulationTabs.CAMPAIGN_HQ)}
         >
-          <h5 className="my-2">CAMPAIGN HQ</h5>
+          <h5 className="my-2">
+            {getLocationNameByType('hq', 'CAMPAIGN HQ').toUpperCase()}
+          </h5>
         </Col>
         <Col
           xs={3}
@@ -50,7 +55,9 @@ const Header = view(({ activeTab, setActiveTab }) => {
           )}
           onClick={() => setActiveTab(SimulationTabs.LOCAL_BRANCH)}
         >
-          <h5 className="my-2">LOCAL BRANCH</h5>
+          <h5 className="my-2">
+            {getLocationNameByType('local', 'LOCAL').toUpperCase()}
+          </h5>
         </Col>
         <Col
           xs={3}
@@ -81,7 +88,12 @@ const Header = view(({ activeTab, setActiveTab }) => {
                   })
               }
             >
-              <p className="my-0">HQ ACTIONS</p>
+              <p className="my-0">
+                {`${getLocationNameByType(
+                  'hq',
+                  'HQ',
+                )} ACTIONS`.toUpperCase()}
+              </p>
             </Col>
             <Col
               md={2}
@@ -94,17 +106,24 @@ const Header = view(({ activeTab, setActiveTab }) => {
                   })
               }
             >
-              <p className="my-0">LOCAL ACTIONS</p>
+              <p className="my-0">
+                {`${getLocationNameByType(
+                  'local',
+                  'LOCAL',
+                )} ACTIONS`.toUpperCase()}
+              </p>
             </Col>
             <Col
               className="d-flex justify-content-center align-items-center simulation-menu-item--small cursor-pointer border-primary border-right p-0"
               onClick={() =>
-                document.querySelector('#curveball')?.scrollIntoView({
-                  behavior: 'smooth',
-                })
+                document
+                  .querySelector('#mitigations')
+                  ?.scrollIntoView({
+                    behavior: 'smooth',
+                  })
               }
             >
-              <p className="my-0">CURVEBALL EVENTS</p>
+              <p className="my-0">ITEM INVENTORY</p>
             </Col>
             <Col
               className="d-flex justify-content-center align-items-center simulation-menu-item--small cursor-pointer border-primary border-right p-0"
@@ -119,14 +138,12 @@ const Header = view(({ activeTab, setActiveTab }) => {
             <Col
               className="d-flex justify-content-center align-items-center simulation-menu-item--small cursor-pointer p-0"
               onClick={() =>
-                document
-                  .querySelector('#mitigations')
-                  ?.scrollIntoView({
-                    behavior: 'smooth',
-                  })
+                document.querySelector('#curveball')?.scrollIntoView({
+                  behavior: 'smooth',
+                })
               }
             >
-              <p className="my-0">PURCHASED ITEMS</p>
+              <p className="my-0">CURVEBALL EVENTS</p>
             </Col>
           </>
         )}
@@ -142,18 +159,6 @@ const Header = view(({ activeTab, setActiveTab }) => {
               }
             >
               <p className="my-0">EVENTS & RESPONSES</p>
-            </Col>
-            <Col
-              className="d-flex justify-content-center align-items-center simulation-menu-item--small cursor-pointer border-primary border-right p-0"
-              onClick={() =>
-                document
-                  .querySelector('#mitigations')
-                  ?.scrollIntoView({
-                    behavior: 'smooth',
-                  })
-              }
-            >
-              <p className="my-0">PURCHASES</p>
             </Col>
             <Col
               className="d-flex justify-content-center align-items-center simulation-menu-item--small cursor-pointer border-primary border-right p-0"

@@ -18,33 +18,29 @@ const SystemRelatedActions = view(({ location, className }) => {
   } = gameStore;
   const { responses, systems } = useStaticData();
 
-  const systemRealtedActions = useMemo(
+  const systemRelatedActions = useMemo(
     () =>
       _filter(
         responses,
         ({
           systems_to_restore,
-          required_mitigation,
-          required_mitigation_type,
-          location: responseLocation,
+          required_mitigation: requiredMitigationId,
         }) =>
           // has system to restore
           systems_to_restore?.length &&
-          // location type matches
-          (!location || responseLocation === location) &&
-          // restorable system is down
-          systems_to_restore.some((key) => !gameSystems[key]) &&
+          // location specific restorable system is down
+          systems_to_restore.some(
+            (key) =>
+              !gameSystems[key] &&
+              (!location ||
+                systems[key].type === 'party' ||
+                systems[key].type === location),
+          ) &&
           // required mitigation met
-          (!required_mitigation_type ||
-            !required_mitigation ||
-            (required_mitigation_type === 'party'
-              ? gameMitigations[`${required_mitigation}_hq`] &&
-                gameMitigations[`${required_mitigation}_local`]
-              : gameMitigations[
-                  `${required_mitigation}_${required_mitigation_type}`
-                ])),
+          (!requiredMitigationId ||
+            gameMitigations[requiredMitigationId]),
       ),
-    [responses, gameMitigations, gameSystems, location],
+    [responses, gameMitigations, gameSystems, location, systems],
   );
 
   const submitAction = useCallback(
@@ -53,11 +49,11 @@ const SystemRelatedActions = view(({ location, className }) => {
       event.stopPropagation();
       const isValid =
         event.target.checkValidity() &&
-        event.target?.systemRealtedActions?.value;
+        event.target?.systemRelatedActions?.value;
       if (isValid) {
         closeError();
         restoreSystem({
-          responseId: event.target.systemRealtedActions.value,
+          responseId: event.target.systemRelatedActions.value,
         });
       } else {
         popError('Please select an action.');
@@ -79,14 +75,14 @@ const SystemRelatedActions = view(({ location, className }) => {
             variant="outline-primary"
             className="rounded-pill w-100"
             type="submit"
-            disabled={!systemRealtedActions.length}
+            disabled={!systemRelatedActions.length}
           >
             PERFORM ACTION
           </Button>
         </Col>
         <Col>
-          {systemRealtedActions.length
-            ? systemRealtedActions.map((action) => (
+          {systemRelatedActions.length
+            ? systemRelatedActions.map((action) => (
                 <Form.Check
                   custom
                   required
@@ -110,7 +106,7 @@ const SystemRelatedActions = view(({ location, className }) => {
                       </Col>
                     </Row>
                   }
-                  name="systemRealtedActions"
+                  name="systemRelatedActions"
                   disabled={budget < action.cost}
                   id={action.id}
                   value={action.id}

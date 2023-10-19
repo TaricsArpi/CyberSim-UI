@@ -17,7 +17,6 @@ const EventLogSwitch = view(
       game_timer,
       description,
       type,
-      mitigation_type,
       mitigation_id,
       response_id,
       action_id,
@@ -27,10 +26,10 @@ const EventLogSwitch = view(
     },
     filter,
   }) => {
-    const shouldDisplay = useMemo(() => filter[type] || false, [
-      filter,
-      type,
-    ]);
+    const shouldDisplay = useMemo(
+      () => filter[type] || false,
+      [filter, type],
+    );
 
     const eventLog = useMemo(() => {
       switch (type) {
@@ -39,7 +38,6 @@ const EventLogSwitch = view(
             <BudgetItemLog
               game_timer={game_timer}
               type={type}
-              mitigation_type={mitigation_type}
               mitigation_id={mitigation_id}
             />
           );
@@ -153,7 +151,6 @@ const EventLogSwitch = view(
     }, [
       type,
       game_timer,
-      mitigation_type,
       mitigation_id,
       response_id,
       action_id,
