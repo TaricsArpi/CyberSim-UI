@@ -23,7 +23,7 @@ const Mitigations = view(
       preparationMitigations,
       actions: { toggleMitigation, startSimulation },
     } = gameStore;
-    const { mitigations } = useStaticData();
+    const { mitigations, getTextWithSynonyms } = useStaticData();
 
     const mitigationsByCategory = useMemo(
       () =>
@@ -86,13 +86,17 @@ const Mitigations = view(
               <Row>
                 <Col>
                   <h3 className="m-0">
-                    <span className="mr-1">Budget Allocated:</span>
+                    <span className="mr-1">
+                      {getTextWithSynonyms('Budget Allocated:')}
+                    </span>
                     {numberToUsd(allocatedCategoryBudgets.sum)}
                   </h3>
                 </Col>
                 <Col className="text-right">
                   <h3 className="m-0">
-                    <span className="mr-1">Remaining Budget:</span>
+                    <span className="mr-1">
+                      {getTextWithSynonyms('Remaining Budget:')}
+                    </span>
                     {numberToUsd(budget)}
                   </h3>
                 </Col>

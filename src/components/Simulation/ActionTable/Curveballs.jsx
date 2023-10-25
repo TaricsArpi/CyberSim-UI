@@ -7,7 +7,7 @@ import { gameStore } from '../../GameStore';
 import { numberToUsd } from '../../../util';
 
 const Curveballs = ({ className }) => {
-  const { curveballs } = useStaticData();
+  const { curveballs, getTextWithSynonyms } = useStaticData();
   const {
     actions: { performCurveball },
     popError,
@@ -70,7 +70,7 @@ const Curveballs = ({ className }) => {
                   <Col className="text-right">
                     {curveball.budget_change ||
                     curveball.lose_all_budget
-                      ? `Budget: ${
+                      ? `${getTextWithSynonyms('Budget')}: ${
                           curveball.budget_change > 0 &&
                           !curveball.lose_all_budget
                             ? '+'
@@ -87,7 +87,7 @@ const Curveballs = ({ className }) => {
                       ? ', '
                       : ''}
                     {curveball.poll_change
-                      ? `Poll: ${
+                      ? `${getTextWithSynonyms('Poll')}: ${
                           curveball.poll_change > 0 ? '+' : ''
                         }${curveball.poll_change}%`
                       : ''}

@@ -7,6 +7,7 @@ import { view } from '@risingstack/react-easy-state';
 import { gameStore } from './GameStore';
 import { numberToUsd } from '../util';
 import useTimeTaken from '../hooks/useTimeTaken';
+import { useStaticData } from './StaticDataProvider';
 
 const TimeTaken = view(({ big }) => {
   const { paused } = gameStore;
@@ -30,6 +31,7 @@ const TimeTaken = view(({ big }) => {
 // BudgetPollTimer
 const BPT = view(({ big }) => {
   const { budget, poll } = gameStore;
+  const { getTextWithSynonyms } = useStaticData();
 
   return (
     <Row
@@ -46,7 +48,9 @@ const BPT = view(({ big }) => {
         })}
       >
         {big && (
-          <h2 className="font-weight-bold my-2">Available Budget</h2>
+          <h2 className="font-weight-bold my-2">
+            {getTextWithSynonyms('Available Budget')}
+          </h2>
         )}
         <h4 className="bpt-item font-weight-normal mb-0">
           {numberToUsd(budget).replace('$', '$ ')}
@@ -61,7 +65,9 @@ const BPT = view(({ big }) => {
         })}
       >
         {big && (
-          <h2 className="font-weight-bold my-2">Support in Polls</h2>
+          <h2 className="font-weight-bold my-2">
+            {getTextWithSynonyms('Support in Polls')}
+          </h2>
         )}
         <h4 className="bpt-item font-weight-normal mb-0">{poll} %</h4>
       </Col>
@@ -74,7 +80,9 @@ const BPT = view(({ big }) => {
         })}
       >
         {big && (
-          <h2 className="font-weight-bold my-2">Time Elapsed</h2>
+          <h2 className="font-weight-bold my-2">
+            {getTextWithSynonyms('Time Elapsed')}
+          </h2>
         )}
         <TimeTaken big={big} />
       </Col>

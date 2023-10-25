@@ -4,6 +4,7 @@ import { view } from '@risingstack/react-easy-state';
 import { gameStore } from '../GameStore';
 import { reduce as _reduce } from 'lodash';
 import { numberToUsd } from '../../util';
+import { useStaticData } from '../StaticDataProvider';
 
 const AvailableActionItems = view(({ actionList, role }) => {
   const {
@@ -12,6 +13,8 @@ const AvailableActionItems = view(({ actionList, role }) => {
     popError,
     closeError,
   } = gameStore;
+
+  const { getTextWithSynonyms } = useStaticData();
 
   const formRef = useRef();
 
@@ -46,7 +49,9 @@ const AvailableActionItems = view(({ actionList, role }) => {
             );
           if (action.poll_increase !== 0)
             resultDescription.push(
-              `Gain ${action.poll_increase}% in polls`,
+              `Gain ${action.poll_increase}% in ${getTextWithSynonyms(
+                'polls',
+              )}`,
             );
           if (action.budget_increase !== 0)
             resultDescription.push(
@@ -58,7 +63,7 @@ const AvailableActionItems = view(({ actionList, role }) => {
         },
         {},
       ),
-    [actionList],
+    [actionList, getTextWithSynonyms],
   );
 
   return (

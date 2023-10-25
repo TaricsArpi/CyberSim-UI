@@ -11,6 +11,7 @@ import { AiOutlineCheck, AiOutlineClose } from 'react-icons/ai';
 import { useCallback } from 'react';
 
 import { numberToUsd } from '../../util';
+import { useStaticData } from '../StaticDataProvider';
 
 const MitigationCategory = ({
   name,
@@ -22,6 +23,8 @@ const MitigationCategory = ({
   isSummary,
   allowSell = false,
 }) => {
+  const { getTextWithSynonyms } = useStaticData();
+
   const confirmBuy = useCallback(
     (mitigation, event) => {
       const checked = event.target.checked;
@@ -72,7 +75,8 @@ const MitigationCategory = ({
         <Col xs={11}>
           <h4 className="m-0 font-weight-normal border-bottom border-primary w-100 text-uppercase">
             ALLOCATED <span className="font-weight-bold">{name}</span>{' '}
-            BUDGET : {numberToUsd(allocatedBudget)}
+            {getTextWithSynonyms('budget').toUpperCase()} :{' '}
+            {numberToUsd(allocatedBudget)}
           </h4>
         </Col>
         <Col xs={1}>

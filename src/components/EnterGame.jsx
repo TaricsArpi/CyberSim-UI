@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 import { SocketEvents } from '../constants';
 import { gameStore } from './GameStore';
+import { useStaticData } from './StaticDataProvider';
 
 const gameIdFromLocalStorage = localStorage.getItem('gameId');
 
@@ -14,6 +15,8 @@ const EnterGame = view(() => {
     actions: { enterGame },
   } = gameStore;
 
+  const { getTextWithSynonyms } = useStaticData();
+
   const [gameId, setGameId] = useState(gameIdFromLocalStorage || '');
   const [rememberGameId, setRememberGameId] = useState(
     !!gameIdFromLocalStorage,
@@ -22,7 +25,7 @@ const EnterGame = view(() => {
   const [adjustGameConfig, setAdjustGameConfig] = useState(false);
   const [initialBudget, setInitialBudget] = useState(6000);
   const [initialPollPercentage, setInitialPollPercentage] =
-    useState(55);
+    useState(55.0);
 
   return (
     <Container fluid="md" className="mt-5 pt-5">
@@ -94,12 +97,12 @@ const EnterGame = view(() => {
                 <Form.Group controlId="Budget">
                   <Form.Label column="lg">
                     <h5 className="font-weight-normal mb-0">
-                      Budget:
+                      {getTextWithSynonyms('Budget:')}
                     </h5>
                   </Form.Label>
                   <Form.Control
                     type="number"
-                    placeholder="Budget"
+                    placeholder={getTextWithSynonyms('Budget')}
                     size="sm"
                     onChange={(event) => {
                       const newValue = !event.target.value.length
@@ -123,23 +126,25 @@ const EnterGame = view(() => {
                 >
                   <Form.Label column="lg">
                     <h5 className="font-weight-normal mb-0">
-                      Poll percentage:
+                      {getTextWithSynonyms('Poll percentage:')}
                     </h5>
                   </Form.Label>
                   <Form.Control
                     type="number"
                     size="sm"
-                    placeholder="Poll Percentage"
+                    placeholder={getTextWithSynonyms(
+                      'Poll percentage',
+                    )}
                     onChange={(event) => {
                       const newValue = !event.target.value.length
                         ? ''
-                        : parseInt(event.target.value, 10);
+                        : parseFloat(event.target.value);
 
                       setInitialPollPercentage(newValue);
                     }}
                     value={initialPollPercentage}
                     autoComplete="off"
-                    step={1}
+                    step={0.5}
                     max={100}
                     min={0}
                     isInvalid={!initialPollPercentage}

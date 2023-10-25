@@ -44,6 +44,60 @@ export const StaticDataProvider = ({ children }) => {
     [locations, locationsLoading],
   );
 
+  // DICTIONARY
+  const [dictionaryLoading, setDictionaryLoading] = useState(false);
+  const [dictionary, setDictionary] = useState([]);
+  useEffect(() => {
+    setDictionaryLoading(true);
+    axios
+      .get(`${process.env.REACT_APP_API_URL}/dictionary`)
+      .then(({ data }) => {
+        const resultObject = data.reduce((acc, obj) => {
+          const values = Object.values(obj);
+
+          const key = values[0];
+          const value = values[1];
+
+          // Check if the key already exists in the resultObject
+          if (!acc.hasOwnProperty(key)) {
+            acc[key] = value;
+          }
+
+          return acc;
+        }, {});
+        setDictionary(resultObject);
+      })
+      .catch((e) => console.error(e))
+      .finally(() => setDictionaryLoading(false));
+  }, [setDictionary]);
+
+  // DICTIONARY SYNONYM GETTER
+  const getTextWithSynonyms = useCallback(
+    (text) => {
+      if (dictionaryLoading) {
+        return text;
+      }
+
+      // Create a regular expression to match all occurrences of the words
+      const regex = new RegExp(
+        Object.keys(dictionary).join('|'),
+        'gi',
+      );
+
+      // Replace words with their synonyms
+      const replacedText = text.replace(regex, (match) => {
+        const synonym = dictionary[match.toLowerCase()];
+
+        return match[0] === match[0].toUpperCase()
+          ? synonym.charAt(0).toUpperCase() + synonym.slice(1)
+          : synonym;
+      });
+
+      return replacedText;
+    },
+    [dictionary, dictionaryLoading],
+  );
+
   // SYSTEMS
   const [systemsLoading, setSystemsLoading] = useState(false);
   const [systems, setSystems] = useState([]);
@@ -134,6 +188,9 @@ export const StaticDataProvider = ({ children }) => {
         locationsLoading,
         locations,
         getLocationNameByType,
+        dictionaryLoading,
+        dictionary,
+        getTextWithSynonyms,
         systemsLoading,
         systems,
         mitigationsLoading,
@@ -148,6 +205,7 @@ export const StaticDataProvider = ({ children }) => {
         curveballs,
         loading:
           locationsLoading ||
+          dictionaryLoading ||
           systemsLoading ||
           mitigationsLoading ||
           injectionsLoading ||
